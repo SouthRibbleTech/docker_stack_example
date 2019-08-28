@@ -1,0 +1,39 @@
+version: "3"
+services:
+  mysql:
+    image: mysql:5.6
+    ports:
+      - 53306:3306
+    container_name: test_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+
+  adminer:
+    image: adminer
+    container_name: test_adminer
+    ports:
+      - 48080:8080
+    restart: always
+
+  zookeepr:
+    image: zookeeper
+    container_name: test_zookeeper
+    restart: always
+
+
+  kafka:
+    image: debezium/kafka
+    container_name: test_kafka
+    environment:
+      - BROKER_ID=1
+      - ZOOKEEPER_CONNECT=test_zookeeper
+
+  nifi:
+    image: xemuliam/nifi
+    container_name: test_nifi
+    ports:
+      - 58080:8080
+      - 58443:8443
+      - 58081:8081
+    volumes:
+      - ./data:/host_data
